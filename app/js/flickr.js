@@ -1,4 +1,6 @@
 .import "md5.js" as MD5
+//.import "lib/jquery-3.1.1.slim.min.js" as jQuery
+
 
 function Flickr(apiKey, apiSecret) {
 
@@ -164,7 +166,7 @@ function Flickr(apiKey, apiSecret) {
         args = getArgs(args, required);
       }
       validateArgs(method, args, required);
-      args["api_sig"] = calculateHash(args, apiSecret);
+      args["api_sig"] = calculateMd5Hash(args, apiSecret);
       jQuery.extend(settings.data, args);
       jQuery.ajax(settings).done(function(response) {
         responseHandler.apply(self, [response, callback, args]);
@@ -395,7 +397,7 @@ FlickrPhoto.prototype.href = function() {
   return 'https://flickr.com/photos/' + this.owner + '/' + this.id;
 };
 
-function calculateHash( args, apiSecret ) {
+function calculateMd5Hash( args, apiSecret ) {
     var hash = apiSecret;
     for (var i in args) {
         var arg = args[i];
