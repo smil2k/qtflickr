@@ -1,4 +1,3 @@
-.import "md5.js" as MD5
 //.import "lib/jquery-3.1.1.slim.min.js" as jQuery
 
 

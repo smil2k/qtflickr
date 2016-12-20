@@ -1,9 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>js/md5.js</file>
         <file>js/flickr.js</file>
         <file>js/lib/jquery-3.1.1.slim.min.js</file>
-        <file>js/sha1.js</file>
+        <file>js/hmacsha1.js</file>
     </qresource>
 </RCC>
