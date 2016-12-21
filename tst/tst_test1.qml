@@ -1,41 +1,70 @@
 import QtQuick 2.3
 import QtTest 1.0
-import "../app/js/hmacsha1.js" as HMAC
 import "../app/js/flickr.js" as Flickr
+import FlickrHelper 1.0
+import Social 1.0
 
 TestCase {
     name: "InfraTests"
 
-    function test_FlickrApi_Sig() {
-        var a = {
-            "format": 'json',
-            "api_key": '11111111',
-            "method": 'flickr.auth.getFrob',
-            "api_sig": 'bla'
-         };
+    OAuth {
+        id: "flickr"
+        consumerKey: 'fb1a4db841af7d7c04a0da65081e8e26'
+        consumerSecret: '524a496d5f624f28'
 
-        compare(Flickr.calculateHash(a, "555555555"),
-                "603697fc6f7e3f5312ef163eb11463c7",
-                "md5 is ok");
+        onRequestTokenReceived: function (map, string) {
+            console.log(string);
+        }
     }
 
-    function test_sha1Hash() {
-        var s = new HMAC.jsSHA("SHA-1", "TEXT");
-        s.update("GET&https%3A%2F%2Fwww.flickr.com%2Fservices%2Foauth%2Frequest_token&oauth_callback%3Dhttp%253A%252F%252Fwww.example.com%26oauth_consumer_key%3D653e7a6ecc1d528c516cc8f92cf98611%26oauth_nonce%3D95613465%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1305586162%26oauth_version%3D1.0");
-        compare(s.getHash("HEX"), "5db1bc2a7d91ede509b60ed749972360220902ed", "sha1 hex");
-        compare(s.getHash("B64"), "XbG8Kn2R7eUJtg7XSZcjYCIJAu0=", "sha1 b64");
+    function test_FlickrApi_Sig() {
+        var a = {
+            oauth_callback: "http://www.example.com",
+            oauth_consumer_key: "653e7a6ecc1d528c516cc8f92cf98611",
+            oauth_nonce: "95613465",
+            oauth_signature_method: "HMAC-SHA1",
+            oauth_timestamp: "1305586162",
+            oauth_version: "1.0"
+         };
+
+        compare(Flickr.calculateHMAC("GET","https://www.flickr.com/services/oauth/request_token", Flickr._formQueryString(a), "653e7a6ecc1d528c516cc8f92cf98611","maci"),
+                "PXtROW/Qdi3Y8WCL3G+tl/cqOco=",
+                "apisig is ok");
     }
 
     function test_sha1HMAC() {
-        var s = new HMAC.jsSHA("SHA-1", "TEXT");
-        s.setHMACKey("maci", "TEXT");
-        s.update("GET&https%3A%2F%2Fwww.flickr.com%2Fservices%2Foauth%2Frequest_token&oauth_callback%3Dhttp%253A%252F%252Fwww.example.com%26oauth_consumer_key%3D653e7a6ecc1d528c516cc8f92cf98611%26oauth_nonce%3D95613465%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1305586162%26oauth_version%3D1.0");
-        compare(s.getHMAC("B64"), "hhml2yqgMSIA5IicCllZTaGkgDw=", "sha1 b64");
+        var s = CryptoHelper.hmacSha1Base64(
+                    'fb1a4db841af7d7c04a0da65081e8e26&524a496d5f624f28',
+                    'GET&https%3A%2F%2Fwww.flickr.com%2Fservices%2Foauth%2Frequest_token&oauth_callback%3Dhttp%253A%252F%252Fpurevirtual.thanks.for.calling%252F%26oauth_consumer_key%3Dfb1a4db841af7d7c04a0da65081e8e26%26oauth_nonce%3D1482321561165%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1482321561165%26oauth_version%3D1.0');
+        compare(s, "oPRyJogntS5H23kKzIjef9AoGi4=", "sha1 b64");
     }
 
+    function test_FlickrApi_callNative() {
+        var data = {
+            'oauth_callback': "http://trust.me.its.ok/"
+        }
 
-    /*
-    function test_FlickrApi_Sig() {
+        flickr.requestToken("GET", "https://www.flickr.com/services/oauth/request_token", data);
+
+        wait(5000);
+
+        console.log("Hello?!");
+    }
+
+   /* function test_FlickrApi_call() {
         var f = new Flickr.Flickr("fb1a4db841af7d7c04a0da65081e8e26", "524a496d5f624f28")
+        var err = 0;
+        f.requestToken(function(t) {
+
+        }, function() {
+            err = 1;
+        }
+        );
+
+        wait(5000);
+
+        if (err) {
+            fail("error!")
+        }
     }*/
 }
