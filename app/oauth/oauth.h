@@ -45,7 +45,7 @@ signals:
 
 public slots:
     void requestToken(const QString & method, const QString & url, const QVariantMap & params = QVariantMap() );
-    void accessToken(const QString & url, const QString & oauthToken, const QString & oauthTokenSecret, const QString & oauthVerifier);
+    void accessToken(const QString & method, const QString & url, const QString & oauthToken, const QString & oauthTokenSecret, const QString & oauthVerifier);
     void resource(const QString & url, const QString oauthToken, const QString & oauthTokenSecret, const QString & method, const Params & params = QVariantMap(), const QByteArray & rawParams = QByteArray());
     void resource(const QString & url, const QString & method, const QVariantMap & params = QVariantMap(), const QByteArray & rawParams = QByteArray());
 

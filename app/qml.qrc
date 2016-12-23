@@ -3,5 +3,7 @@
         <file>main.qml</file>
         <file>js/flickr.js</file>
         <file>js/ajaxmee.js</file>
+        <file>components/FlickrComponents.1/Flickr.qml</file>
+        <file>components/FlickrComponents.1/AccessPrompt.qml</file>
     </qresource>
 </RCC>

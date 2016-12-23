@@ -1,10 +1,9 @@
 TEMPLATE = app
 
-QT += qml quick
+QT += qml quick webview
 CONFIG += c++11
 
-SOURCES += main.cpp \
-    cryptohelper.cpp
+SOURCES += main.cpp
 
 RESOURCES += qml.qrc
 
@@ -30,7 +29,6 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-HEADERS += \
-    cryptohelper.h
+HEADERS +=
 
 include (oauth/oauth.pri)

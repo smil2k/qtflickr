@@ -32,12 +32,11 @@ void OAuth::requestToken(const QString &method, const QString & url, const Param
     d->requestToken(method, url, params);
 }
 
-void OAuth::accessToken(const QString & url, const QString & oauthToken, const QString & oauthTokenSecret, const QString & oauthVerifier){
+void OAuth::accessToken(const QString & method, const QString & url, const QString & oauthToken, const QString & oauthTokenSecret, const QString & oauthVerifier){
     Q_D(OAuth);
     d->oauthToken = oauthToken;
     d->oauthTokenSecret = oauthTokenSecret;
-    d->accessToken(url, oauthVerifier);
-
+    d->accessToken(method, url, oauthVerifier);
 }
 void OAuth::resource(const QString & url, const QString oauthToken, const QString & oauthTokenSecret, const QString & method, const Params & params, const QByteArray & rawParams){
     Q_D(OAuth);

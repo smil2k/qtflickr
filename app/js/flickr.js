@@ -190,36 +190,6 @@ function Flickr(apiKey, apiSecret) {
         }
     }
 
-    self["requestToken"] = function (tokenCallback, errorCallback) {
-        var args = {
-            oauth_callback: "http://purevirtual.thanks.for.calling/",
-            oauth_consumer_key: apiKey,
-            oauth_nonce: "" + Date.now(),
-            oauth_signature_method: "HMAC-SHA1",
-            oauth_timestamp: "" + Date.now(),
-            oauth_version: "1.0"
-        };
-
-        var url =  'https://www.flickr.com/services/oauth/request_token';
-        var query = _formQueryString(args);
-        args["oauth_signature"] = calculateHMAC("GET", url, query, apiKey, apiSecret);
-
-        AJAX.request("GET", url, args,
-                     function(response) {
-                         console.log("wazzup?!")
-                         console.log(response.responseText);
-                         tokenCallback(parseRestResponse(response));
-                     }, function(doc) {
-                         console.log("nope?!")
-                         console.log(doc.statusText);
-                         console.log(doc.status);
-                         console.log(doc.responseText);
-                         console.log(parseRestResponse(doc.responseText));
-                         errorCallback();
-                     });
-
-    }
-
     function parseRestResponse(body) {
         if(!body) {
             return false;

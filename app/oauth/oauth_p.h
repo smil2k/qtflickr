@@ -31,7 +31,6 @@ private:
     QNetworkAccessManager * nam;
     OAuth * const q_ptr;
     QSslConfiguration * config;
-    QNetworkReply * oauthReply;
 
 private slots:
     QString paramsString(const Params & params);
@@ -46,7 +45,7 @@ private slots:
 
 public slots:
     void requestToken(const QString & method, const QString & url, const Params & params );
-    void accessToken(const QString & url, const QString & verifier);
+    void accessToken(const QString & method, const QString & url, const QString & verifier);
     void resource(const QString & url, const QString & method, const Params & params, const QByteArray & rawParams = QByteArray());
 
 

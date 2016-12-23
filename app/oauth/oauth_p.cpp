@@ -61,6 +61,10 @@ QString OAuthPrivate::buildAuthHeader(const QString & method, const QString & ur
     if(!oauthToken.isEmpty())
         params.insert("oauth_token", oauthToken.toLocal8Bit());
 
+    if(!callbackUrl.isEmpty())
+        params.insert("oauth_callback", callbackUrl.toLocal8Bit());
+
+
     params.unite(data);
 
     QString authStr;
@@ -108,22 +112,31 @@ void OAuthPrivate::requestToken(const QString & method, const QString & url, con
 
     QNetworkRequest request = buildRequest(method, url, buildAuthHeader(method, url, params)).first;
     request.setAttribute(QNetworkRequest::User, RequestToken);
+
     QNetworkReply * reply;
     if (method.toUpper() == "GET") {
         reply = nam->get(request);
     } else {
         reply = nam->post(request, QByteArray());
     }
+
     reply->setSslConfiguration(* config);
     connect(reply, SIGNAL(finished()), SLOT(reply()));
 }
 
 
-void OAuthPrivate::accessToken(const QString & url, const QString & verifier){
+void OAuthPrivate::accessToken(const QString & method, const QString & url, const QString & verifier){
 
-    QNetworkRequest request = buildRequest("POST", url, buildAuthHeader("POST", url, Params(), verifier)).first;
+    QNetworkRequest request = buildRequest(method, url, buildAuthHeader(method, url, Params(), verifier)).first;
     request.setAttribute(QNetworkRequest::User, AccessToken);
-    QNetworkReply * reply = nam->post(request, QByteArray());
+
+    QNetworkReply * reply;
+    if (method.toUpper() == "GET") {
+        reply = nam->get(request);
+    } else {
+        reply = nam->post(request, QByteArray());
+    }
+
     reply->setSslConfiguration(* config);
     connect(reply, SIGNAL(finished()), SLOT(reply()));
 }
@@ -137,7 +150,7 @@ void OAuthPrivate::resource(const QString &url, const QString &method, const Par
     QNetworkRequest request = r.first;
     request.setAttribute(QNetworkRequest::User, Resource);
 
-    oauthReply = 0;
+    QNetworkReply *oauthReply = 0;
 
     if(method.toUpper() == "POST"){
 
@@ -190,6 +203,5 @@ void OAuthPrivate::reply(){
         emit q->errorOccurred(data);
     }
 
-    oauthReply->deleteLater();
-
-}
+    r->deleteLater();
+ }
